@@ -1,0 +1,346 @@
+{
+  "name": "Relief Jobs Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "text": "={{ $json.body_markdown }}",
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\n  \"is_nationalized\": {\n    \"value\": true,\n    \"reasoning\": \"The text states 'This position is open to Ukrainian nationals only.'\"\n  },\n  \"is_project_based\": {\n    \"value\": true,\n    \"reasoning\": \"The contract is described as 'Fixed-term, 12 months (dependent on funding)'.\"\n  },\n  \"mentioned_donors\": [\"USAID\", \"ECHO\"],\n  \"keywords\": [\"WASH\", \"Program Manager\", \"Humanitarian\", \"Project Management\", \"Team Leadership\", \"Reporting\", \"M&E\", \"Budget Oversight\"],\n  \"is_rolling_basis\": {\n    \"value\": true,\n    \"reasoning\": \"The ad mentions 'reviewing applications on a rolling basis' and may 'fill the position before the deadline'.\"\n  },\n  \"languages\": {\n    \"mandatory\": [\"English\"],\n    \"preferred\": [\"Ukrainian\"]\n  },\n  \"seniority\": {\n    \"level\": \"Managerial\",\n    \"reasoning\": \"The title is 'Program Manager', it requires 'over 7 years of experience', and involves managing a team of 5.\"\n  }\n}",
+        "options": {
+          "systemPromptTemplate": "You are a highly intelligent and precise data extraction assistant specializing in analyzing job descriptions from the humanitarian and development sectors. Your task is to read a job description and extract specific pieces of information. Your response MUST be a single, valid JSON object and nothing else. Do not include any explanatory text before or after the JSON.",
+          "batching": {
+            "batchSize": 5,
+            "delayBetweenBatches": 10
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "3314606e-61b2-4a34-b9e8-8e523e9064ec",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        176
+      ],
+      "id": "ad720df2-d3ec-45d3-9a30-d2d41a71baf2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "YOUR_OPENAI_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "job_llm_extractions",
+          "mode": "list",
+          "cachedResultName": "job_llm_extractions"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "is_project_based": "={{ $json.output.is_project_based.value }}",
+            "is_rolling_basis": "={{ $json.output.is_rolling_basis.value }}",
+            "job_id": "={{ $('Execute a SQL query').item.json.job_id }}",
+            "is_nationalized": "={{ $json.output.is_nationalized.value }}",
+            "is_project_based_reasoning": "={{ $json.output.is_project_based.reasoning }}",
+            "mentioned_donors": "={{ $json.output.mentioned_donors }}",
+            "keywords": "={{ $json.output.keywords }}",
+            "is_rolling_basis_reasoning": "={{ $json.output.is_rolling_basis.reasoning }}",
+            "mandatory_languages": "={{ $json.output.languages.mandatory }}",
+            "preferred_languages": "={{ $json.output.languages.preferred }}",
+            "seniority_level": "={{ $json.output.seniority.level }}",
+            "seniority_reasoning": "={{ $json.output.seniority.reasoning }}",
+            "date_extracted": "={{ $now }}",
+            "is_nationalized_reasoning": "={{ $json.output.is_nationalized.reasoning }}"
+          },
+          "matchingColumns": [
+            "job_id"
+          ],
+          "schema": [
+            {
+              "id": "extraction_id",
+              "displayName": "extraction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "is_nationalized",
+              "displayName": "is_nationalized",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "is_nationalized_reasoning",
+              "displayName": "is_nationalized_reasoning",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "is_project_based",
+              "displayName": "is_project_based",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "is_project_based_reasoning",
+              "displayName": "is_project_based_reasoning",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "mentioned_donors",
+              "displayName": "mentioned_donors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "keywords",
+              "displayName": "keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "is_rolling_basis",
+              "displayName": "is_rolling_basis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "is_rolling_basis_reasoning",
+              "displayName": "is_rolling_basis_reasoning",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "mandatory_languages",
+              "displayName": "mandatory_languages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "preferred_languages",
+              "displayName": "preferred_languages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "seniority_level",
+              "displayName": "seniority_level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "seniority_reasoning",
+              "displayName": "seniority_reasoning",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "date_extracted",
+              "displayName": "date_extracted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        400,
+        0
+      ],
+      "id": "e1a171aa-866f-44d3-bba2-10f25223033a",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -16
+      ],
+      "id": "0ee09671-7b0b-4ec4-892a-b9119afa737d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Selects jobs where a corresponding job_id does not exist in the extractions table\nSELECT\n    j.job_id,\n    j.body_markdown\nFROM\n    public.jobs AS j\nWHERE NOT EXISTS (\n    SELECT 1\n    FROM public.job_llm_extractions e\n    WHERE e.job_id = j.job_id\n)\nORDER BY\n    j.date_created DESC\nLIMIT 50;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -256,
+        0
+      ],
+      "id": "32eacc0d-328d-4ace-9edc-2dd7370e4617",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f4e87236-4ee6-4bc5-953a-e2fbcaab844c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  },
+  "id": "YOUR_WORKFLOW_ID",
+  "tags": []
+}

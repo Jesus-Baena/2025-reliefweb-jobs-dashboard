@@ -1,0 +1,1830 @@
+{
+  "name": "Relief Jobs Call",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.reliefweb.int/v1/jobs?appname=xxxxx&profile=full&limit=1000&sort[]=date:desc",
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1008,
+        -240
+      ],
+      "id": "637f1e76-7117-4e9a-98a9-819def947c86",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -240
+      ],
+      "id": "3ca4bfec-b33f-4ba9-ac7a-a3cb7474349e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "jobs",
+          "mode": "list",
+          "cachedResultName": "jobs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_id": "={{ $json.fields.id }}",
+            "score": "={{ $json.score ?? null }}",
+            "uuid": "={{ $json.fields.uuid }}",
+            "title": "={{ $json.fields.title ?? null }}",
+            "status": "={{ $json.fields.status ?? null }}",
+            "body_markdown": "={{ $json.fields.body ?? null }}",
+            "body_html": "={{ $json.fields['body-html'] ?? null }}",
+            "how_to_apply_html": "={{ $json.fields['how_to_apply-html'] ?? null }}",
+            "how_to_apply_markdown": "={{ $json.fields.how_to_apply ?? null }}",
+            "date_closing": "={{ $json.fields.date?.closing ?? null }}",
+            "date_changed": "={{ $json.fields.date?.changed ?? null }}",
+            "date_created": "={{ $json.fields.date?.created ?? null }}",
+            "api_href": "={{ $json.href ?? null }}",
+            "url_alias": "={{ $json.fields.url_alias ?? null }}",
+            "url": "={{ $json.fields.url ?? null }}"
+          },
+          "matchingColumns": [
+            "job_id"
+          ],
+          "schema": [
+            {
+              "id": "job_id",
+              "displayName": "job_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "uuid",
+              "displayName": "uuid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "body_markdown",
+              "displayName": "body_markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "body_html",
+              "displayName": "body_html",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "how_to_apply_markdown",
+              "displayName": "how_to_apply_markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "how_to_apply_html",
+              "displayName": "how_to_apply_html",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "url_alias",
+              "displayName": "url_alias",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "api_href",
+              "displayName": "api_href",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "date_created",
+              "displayName": "date_created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "date_changed",
+              "displayName": "date_changed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "date_closing",
+              "displayName": "date_closing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -656,
+        -480
+      ],
+      "id": "9cc6ee08-cae5-49d2-87c4-c0a1a992ef96",
+      "name": "Upsert JOBS",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## SOURCES",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -400,
+        -528
+      ],
+      "typeVersion": 1,
+      "id": "f2e01f1d-4ada-4dcc-b54f-61c359738fd7",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.sources (source_id, name, shortname, longname, spanish_name, homepage, api_href)\nVALUES ($1, $2, $3, $4, $5, $6, $7)\nON CONFLICT (source_id) DO UPDATE SET\n    name = EXCLUDED.name,\n    shortname = EXCLUDED.shortname,\n    longname = EXCLUDED.longname,\n    spanish_name = EXCLUDED.spanish_name,\n    homepage = EXCLUDED.homepage,\n    api_href = EXCLUDED.api_href;",
+        "options": {
+          "queryReplacement": "=$1 {{ $('If3').item.json.fields.source.id }} $2 {{ $('If3').item.json.fields.source.name }} $3 {{ $('If3').item.json.fields.source.shortname || null }} $4 {{ $('If3').item.json.fields.source.longname || null }} $5 {{ $('If3').item.json.fields.source.spanish_name || null }} $6 {{ $('If3').item.json.fields.source.homepage || null }} $7 {{ $('If3').item.json.fields.source.href }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        592,
+        -480
+      ],
+      "id": "c3d0a44a-a93e-468b-b9dc-e4e23c35b73e",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.job_sources (job_id, source_id)\nVALUES ($1, $2)\nON CONFLICT (job_id, source_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.source.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        -288
+      ],
+      "id": "c4a94cfb-9659-48d4-8c07-164976c6a9b4",
+      "name": "Postgres6",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.source",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        -384
+      ],
+      "id": "51073cec-dc2b-4a45-9ff0-8e3d70d0f991",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.source",
+              "value": "={{ $json['fields.source'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -384
+      ],
+      "id": "7e183758-5b1b-414e-9dc6-2f56ceb2b8d6",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "organization_types",
+          "mode": "list",
+          "cachedResultName": "organization_types"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "org_type_id": "={{ $json.fields.source.type.id }}",
+            "name": "={{ $json.fields.source.type.name }}"
+          },
+          "matchingColumns": [
+            "org_type_id"
+          ],
+          "schema": [
+            {
+              "id": "org_type_id",
+              "displayName": "org_type_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        -480
+      ],
+      "id": "72182ec5-83fb-4b0e-af03-d1cb00d9493b",
+      "name": "Postgres2",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.source.type }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        -480
+      ],
+      "id": "12b790b6-53f1-48ff-bf93-b03d458450ab",
+      "name": "If3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        -288
+      ],
+      "id": "804ff289-7d0f-446e-b4f3-347c819f2bb8",
+      "name": "Wait1",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "## COUNTRIES",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        -528
+      ],
+      "typeVersion": 1,
+      "id": "e0278bef-41f2-48f0-b409-364e99d4188d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.job_countries (job_id, country_id)\nVALUES ($1, $2)\nON CONFLICT (job_id, country_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.country.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1728,
+        -288
+      ],
+      "id": "218cc988-27f7-42b9-8370-a19bcea29a4b",
+      "name": "Postgres7",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.country",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        -384
+      ],
+      "id": "d9ace409-ffbe-4510-9aae-7d7889f275ed",
+      "name": "Split Out4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.country",
+              "value": "={{ $json['fields.country'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        -384
+      ],
+      "id": "828457c1-fa79-49f4-aa01-847e14e85354",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.countries (country_id, name, shortname, iso3, latitude, longitude, api_href)\nVALUES ($1, $2, $3, $4, $5, $6, $7)\nON CONFLICT (country_id) DO UPDATE SET\n    name = EXCLUDED.name,\n    shortname = EXCLUDED.shortname,\n    iso3 = EXCLUDED.iso3,\n    latitude = EXCLUDED.latitude,\n    longitude = EXCLUDED.longitude,\n    api_href = EXCLUDED.api_href;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.fields.country.id }} $2 {{ $json.fields.country.name }} $3 {{ $json.fields.country.shortname || null }} $4 {{ $json.fields.country.iso3 || null }} $5 {{ $json.fields.country.location.lat }} $6 {{ $json.fields.country.location.lon }} $7 {{ $json.fields.country.href }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1728,
+        -480
+      ],
+      "id": "8802f4ae-9153-4d79-a661-281a64a149cf",
+      "name": "Postgres3",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.country }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        -480
+      ],
+      "id": "d49df610-ad9a-4378-b767-17f95ee94dc6",
+      "name": "If4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1504,
+        -288
+      ],
+      "id": "034998b8-0b9c-45be-9157-98ea044de763",
+      "name": "Wait",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "## CITIES",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -400,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "32255e1c-ae7f-4509-8fee-ee2670736502",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Insert the link by looking up the city_id based on its unique name.\nINSERT INTO public.job_cities (job_id, city_id)\nSELECT $1, city_id FROM public.cities WHERE name = $2\nON CONFLICT (job_id, city_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.city.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        240
+      ],
+      "id": "723658e1-17ba-4621-8522-224e7504477b",
+      "name": "Postgres8",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.city",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        144
+      ],
+      "id": "5b60134b-4897-4c0c-a837-a9ddf15b5cba",
+      "name": "Split Out5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.city",
+              "value": "={{ $json['fields.city'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        144
+      ],
+      "id": "afda42a7-8ebc-49e1-967f-ac3546c57798",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Insert the city if the name doesn't exist. The city_id is auto-generated.\nINSERT INTO public.cities (name)\nVALUES ($1)\nON CONFLICT (name) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.fields.city.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        48
+      ],
+      "id": "f9c1b6d4-d3eb-4f01-82e1-3e852176db4b",
+      "name": "Postgres4",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.city }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        48
+      ],
+      "id": "11d97aad-4bb4-49ab-81d4-55218cadc47f",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        144,
+        240
+      ],
+      "id": "861074eb-6bb1-478a-8002-02b432f05553",
+      "name": "Wait2",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "## POSTING TYPES",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "3367c521-31de-423c-863f-2a61f636c344",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.job_posting_types (job_id, posting_type_id)\nVALUES ($1, $2)\nON CONFLICT (job_id, posting_type_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.type.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1728,
+        272
+      ],
+      "id": "fdc62a45-1655-4d06-a7c6-3b6f31e91b80",
+      "name": "Postgres9",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.type",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        160
+      ],
+      "id": "6f04b414-38f3-4d0a-bb56-be5808838ff3",
+      "name": "Split Out6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.type",
+              "value": "={{ $json['fields.type'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        160
+      ],
+      "id": "f2772fd6-291f-4559-877f-d90d32e7f625",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.posting_types (posting_type_id, name)\nVALUES ($1, $2)\nON CONFLICT (posting_type_id) DO UPDATE SET name = EXCLUDED.name;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.fields.type.id }} $2 {{ $json.fields.type.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1728,
+        64
+      ],
+      "id": "bcba7e21-2497-469d-9ebf-0645cd3fb027",
+      "name": "Postgres5",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.type }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        64
+      ],
+      "id": "c58c9756-8d23-4dc6-b8c7-fc75744b7e22",
+      "name": "If5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1504,
+        272
+      ],
+      "id": "8bf3f0eb-c76d-4281-8ca7-cf81b3879073",
+      "name": "Wait3",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "## EXPERIENCE",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        592
+      ],
+      "typeVersion": 1,
+      "id": "cdc6633e-1d9d-4089-b37c-0030015eada7",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.job_experience_levels (job_id, experience_level_id)\nVALUES ($1, $2)\nON CONFLICT (job_id, experience_level_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.experience.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        832
+      ],
+      "id": "9334f1e0-8a41-4e9a-89c6-ef4dbbea9306",
+      "name": "Postgres10",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.experience",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        720
+      ],
+      "id": "90b7071e-3f3f-478f-a663-d3248ae7726e",
+      "name": "Split Out7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.experience",
+              "value": "={{ $json['fields.experience'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        720
+      ],
+      "id": "c1631442-ecc3-4cb2-9ac8-540e29f1fa93",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.experience_levels (experience_level_id, name)\nVALUES ($1, $2)\nON CONFLICT (experience_level_id) DO UPDATE SET name = EXCLUDED.name;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.fields.experience.id }} $2 {{ $json.fields.experience.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        624
+      ],
+      "id": "7faf4acf-8014-4473-a2bd-f0701344ef1a",
+      "name": "Postgres11",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.experience }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        624
+      ],
+      "id": "2815f96b-05cc-48a8-96a6-63677a46fa50",
+      "name": "If6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        832
+      ],
+      "id": "62757d06-341c-4e2b-a2f5-481d2c0020b0",
+      "name": "Wait4",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "## CAREER CATEGORIES",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        592
+      ],
+      "typeVersion": 1,
+      "id": "9665db6a-2adb-47b6-8b0f-0abe60feb738",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.job_career_categories (job_id, category_id)\nVALUES ($1, $2)\nON CONFLICT (job_id, category_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.career_categories.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1728,
+        832
+      ],
+      "id": "59939887-7336-48c6-ad72-1f60a71a04bb",
+      "name": "Postgres12",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.career_categories",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        720
+      ],
+      "id": "f697aac4-ad77-45a5-8554-ae8e2600e187",
+      "name": "Split Out8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.career_categories",
+              "value": "={{ $json['fields.career_categories'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        720
+      ],
+      "id": "e8ceab6e-e716-4bf5-ae93-4031a8b557ab",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.career_categories (category_id, name)\nVALUES ($1, $2)\nON CONFLICT (category_id) DO UPDATE SET name = EXCLUDED.name;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.fields.career_categories.id }} $2 {{ $json.fields.career_categories.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1728,
+        624
+      ],
+      "id": "41c88b22-c8af-43d5-a045-035206388ce7",
+      "name": "Postgres13",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.career_categories }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        624
+      ],
+      "id": "404b2610-b042-4068-8cf8-8e99766d29c4",
+      "name": "If7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1504,
+        832
+      ],
+      "id": "5e48f767-834d-4f85-bd8a-9f1e626f09fb",
+      "name": "Wait5",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "content": "## THEMES",
+        "height": 440,
+        "width": 1220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        1120
+      ],
+      "typeVersion": 1,
+      "id": "1f1899fd-0159-4971-8aae-9791e328aafb",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.job_themes (job_id, theme_id)\nVALUES ($1, $2)\nON CONFLICT (job_id, theme_id) DO NOTHING;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.id }} $2 {{ $json.fields.theme.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        1360
+      ],
+      "id": "1c6be3fc-e103-4f7a-ba51-cdc13d2bc3ee",
+      "name": "Postgres14",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "fields.theme",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        1264
+      ],
+      "id": "6355b965-5209-427f-8b0b-91ea7475909d",
+      "name": "Split Out9"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c8ac46e-0fa0-4e29-a377-c059e506f665",
+              "name": "fields.theme",
+              "value": "={{ $json['fields.theme'] }}",
+              "type": "object"
+            },
+            {
+              "id": "a82bad69-3b72-44b8-a487-952de48ab6db",
+              "name": "id",
+              "value": "={{ $('Split Out').item.json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        1264
+      ],
+      "id": "d5c7cebd-d27c-401e-8450-65d99151cefe",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.themes (theme_id, name)\nVALUES ($1, $2)\nON CONFLICT (theme_id) DO UPDATE SET name = EXCLUDED.name;",
+        "options": {
+          "queryReplacement": "=$1 {{ $json.fields.theme.id }} $2 {{ $json.fields.theme.name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        1168
+      ],
+      "id": "4f90243f-5eba-4651-bb5b-3ea106b0f5ad",
+      "name": "Postgres15",
+      "credentials": {
+        "postgres": {
+          "id": "YOUR_POSTGRES_CREDENTIAL_ID",
+          "name": "YOUR_POSTGRES_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "afe621c4-bb86-4425-a240-6e278c5b4fee",
+              "leftValue": "={{ $json.fields.theme }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        1168
+      ],
+      "id": "b94a6593-b1e7-4ad9-8690-befb875c925e",
+      "name": "If8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        1360
+      ],
+      "id": "f9b4b50a-01ae-4a88-a4d3-15471c6fb2dc",
+      "name": "Wait6",
+      "webhookId": "YOUR_WEBHOOK_ID"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1248,
+        -240
+      ],
+      "id": "f537a16d-2947-4923-9298-01448c1ddfb6",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upsert JOBS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Out9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Postgres2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres2": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        []
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Postgres6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres3": {
+      "main": [
+        []
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Postgres3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Postgres7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Postgres4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Postgres8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Postgres5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Postgres9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Postgres11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Postgres10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out8": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Postgres13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Postgres12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out9": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Postgres15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait6": {
+      "main": [
+        [
+          {
+            "node": "Postgres14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "903f2751-c8c3-401e-b7c3-c2bc51d6f5f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "YOUR_INSTANCE_ID"
+  },
+  "id": "YOUR_WORKFLOW_ID",
+  "tags": []
+}
